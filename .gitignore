@@ -15,3 +15,10 @@ venv/
 
 # Power BI (el .pbix final SI se entrega, pero via la entrega oficial)
 *.pbix.bak
+dashboard/
+data/
+sql/
+src/
+.env.example
+README.md
+requirements.txt
