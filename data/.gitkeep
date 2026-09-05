@@ -1,0 +1,41 @@
+import sys
+import platform
+
+print("Python :", sys.version.split()[0])
+print("Sistema:", platform.system(), platform.release())
+
+assert sys.version_info >= (3, 9), "Se requiere Python 3.9 o superior"
+print("\nVersion de Python correcta.")
+
+import importlib
+import subprocess
+
+# (nombre para importar, nombre para instalar)
+PAQUETES = [
+    ("pandas",      "pandas"),
+    ("numpy",       "numpy"),
+    ("matplotlib",  "matplotlib"),
+    ("requests",    "requests"),
+    ("sqlalchemy",  "SQLAlchemy"),
+    ("dotenv",      "python-dotenv"),
+    ("statsmodels", "statsmodels"),
+    ("sklearn",     "scikit-learn"),
+]
+
+faltan = []
+for importar, instalar in PAQUETES:
+    try:
+        importlib.import_module(importar)
+        print(f"  ok     {importar}")
+    except ImportError:
+        faltan.append(instalar)
+        print(f"  FALTA  {importar}")
+
+if faltan:
+    print("\nInstalar con:\n  pip install " + " ".join(faltan))
+    for paquete in faltan:
+        print(f'Instalando {paquete}')
+    
+        subprocess.check_call([sys.executable, "-m", "pip", "install", paquete])
+else:
+    print("\nTodos los paquetes del curso estan disponibles.")
