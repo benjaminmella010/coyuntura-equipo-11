@@ -1,10 +1,8 @@
 # Credenciales - NUNCA subir
 .env
 
-# Base de datos local y datos descargados
-data/*.db
-data/*.csv
-!data/.gitkeep
+# Datos y base de datos generados localmente
+data/
 
 # Python
 __pycache__/

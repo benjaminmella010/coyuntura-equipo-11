@@ -42,14 +42,13 @@ kit-inicio-coyuntura/
 │   ├── 04_validacion_hito2.sql
 │   ├── 05_ultimos_datos_hito2.sql
 │   └── 06_series_mensuales_hito2.sql
+│   └── 07_variacion_interanual_hito2.sql
 ├── notebooks/
 │   └── 03_analisis_hito2.ipynb
 ├── figuras/
 │   ├── imacec_cobre_interanual.png
 │   ├── imacec_sectores_cobre.png
 │   └── correlaciones_cobre_rezagos.png
-└── data/
-    └── coyuntura_hito2.db
 ```
 
 ### Función de los archivos
@@ -61,6 +60,7 @@ kit-inicio-coyuntura/
 - `sql/04_validacion_hito2.sql`: revisa la cantidad de observaciones y la cobertura de cada serie.
 - `sql/05_ultimos_datos_hito2.sql`: obtiene la última observación disponible de cada indicador.
 - `sql/06_series_mensuales_hito2.sql`: reúne las series en una frecuencia mensual común.
+- `sql/07_variacion_interanual_hito2.sql`: calcula la variación interanual del Imacec total, minero, no minero y del precio del cobre mediante `LAG(valor, 12)`, esta separado por serie y ordenado por fechas.
 - `notebooks/03_analisis_hito2.ipynb`: contiene el análisis propio del hito 2.
 - `figuras/`: contiene los gráficos generados por el cuaderno.
 
@@ -131,7 +131,10 @@ Consultar las series con frecuencia mensual común:
 ```powershell
 .\venv\Scripts\python.exe -B src/validar_db.py 06_series_mensuales_hito2.sql
 ```
+Calcular las variaciones interanuales utilizadas en el análisis:
 
+```powershell
+.\venv\Scripts\python.exe -B src/validar_db.py 07_variacion_interanual_hito2.sql
 El validador abre la base en modo de solo lectura.
 
 ### 5. Ejecutar el análisis
@@ -144,7 +147,7 @@ Registrar el entorno como kernel de Jupyter:
 
 Abrir `notebooks/03_analisis_hito2.ipynb` en VS Code, seleccionar el kernel `Python (Hito 2 - venv)` y ejecutar sus celdas en orden.
 
-El cuaderno consulta la base, calcula los indicadores y genera los gráficos en la carpeta `figuras/`.
+El cuaderno utiliza las consultas SQL mensual e interanual e incorpora inflación y TPM como contexto tambien genera los gráficos en la carpeta `figuras/`.
 
 ## Datos y metodología
 
@@ -156,7 +159,7 @@ Para el análisis se aplican los siguientes criterios:
 
 - El tipo de cambio y la TPM se convierten a frecuencia mensual mediante el promedio de las observaciones diarias disponibles.
 - Las demás series conservan sus valores mensuales originales.
-- Las variaciones interanuales del Imacec y del cobre comparan cada valor con el mismo mes del año anterior.
+- Las variaciones interanuales del Imacec y del cobre se calculan en SQL mediante `LAG(valor, 12)`, con una partición por serie y orden temporal.
 - El IPC utilizado ya corresponde a una variación interanual y se incorpora directamente.
 - La tasa de desocupación corresponde a un trimestre móvil.
 - Los datos faltantes se mantienen como faltantes, sin reemplazarlos por cero.
